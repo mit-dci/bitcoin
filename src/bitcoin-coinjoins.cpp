@@ -154,8 +154,6 @@ int main(int argc, char* argv[])
         }
     }
 
-    	  std::cout << "BEFORE MAIN" << std::endl;
-
     {
         // Main program logic starts here
       // copied from src/node/transaction.cpp
@@ -166,36 +164,28 @@ int main(int argc, char* argv[])
         // Keeping track of data:
         WhirlpoolTransactions whirlpool_txs{abs_datadir};
 
-	    	  std::cout << "AFTER WHIRLPOOL" << std::endl;
-
         {
             LOCK(chainman.GetMutex());
             current_block = chainman.ActiveChain()[block_height];
         }
-	std::cout << "AFTER VIEW" << std::endl;
-	std::cout << "BEFORE LOOP" << std::endl;
 
         while (current_block) {
-	  std::cout << "TEST" << std::endl;
-
             CBlock block;
             CBlockUndo undo;
             bool read_success = false;
             read_success = chainman.m_blockman.ReadBlockFromDisk(block, *current_block);
             read_success &= chainman.m_blockman.UndoReadFromDisk(undo, *current_block);
             assert(read_success);
-            CFeeRate fee_rate = GetMedianFeeRateFromBlock(block, undo);
-            // the get feerate function
 
-            for (const CTransactionRef& tx : block.vtx) {
+	    GetMedianFeeRateFromBlock(block, undo, current_block->nHeight);
 
-                whirlpool_txs.Update(tx, current_block->nHeight, fee_rate);
+	    for (const CTransactionRef& tx : block.vtx) {
+                whirlpool_txs.Update(tx, current_block->nHeight);
             }
+	    std::cout << "cumulative # of tx0s up to height=" << block_height << " : " << whirlpool_txs.GetNumTx0s() << std::endl;
 
-            std::cout << "Block height: " << block_height << "\n";
-
-            // only look at 10 blocks after the first coinjoin block height for now
-            if (block_height >= FIRST_COINJOIN_HEIGHT+10) {
+            // look at 1 year worth of blocks after the first coinjoin block height for now
+            if (block_height >= FIRST_COINJOIN_HEIGHT+52596) {
                 break;
             }
 
@@ -205,8 +195,6 @@ int main(int argc, char* argv[])
                 block_height += 1;
             }
         }
-
-        std::cout << "# of tx0s: " << whirlpool_txs.GetNumTx0s() << "\n";
     }
 
 epilogue:

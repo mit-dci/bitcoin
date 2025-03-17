@@ -56,7 +56,8 @@ public:
     }
 };
 class CBlockUndo;
-CFeeRate GetMedianFeeRateFromBlock(const CBlock& block, const CBlockUndo& undo);
+//CFeeRate
+void GetMedianFeeRateFromBlock(const CBlock& block, const CBlockUndo& undo, int block_height);
 
 class WhirlpoolTransactions {
     Tx0s tx0s;
@@ -88,7 +89,7 @@ public:
         cj_file.close();
     }
 
-    void Update(const CTransactionRef& tx, int block_height, CFeeRate median_fee_rate);
+  void Update(const CTransactionRef& tx, int block_height);//, CFeeRate median_fee_rate);
 
     int GetNumTx0s() {
         return tx0s.Size();
