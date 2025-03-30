@@ -43,8 +43,8 @@ void GetMedianFeeRateFromBlock(const CBlock& block, const CBlockUndo &undo, int 
            value_in += prevout.out.nValue;
       }
       CAmount value_out = tx->GetValueOut();
-      // tx->GetHash().ToString()
-      std::cout << " " << (value_in - value_out);
+      CFeeRate fee_rate{value_in - value_out, (tx->GetTotalSize())/4};
+      std::cout << " " << fee_rate.GetFee(1);
     }
      std::cout << std::endl;
 }
