@@ -17,8 +17,9 @@ class Tx0s {
 
     // txid, denomination(s)
     std::map<uint256,std::vector<CAmount>> tx0_set;
-
 public:
+    std::map<CAmount, std::size_t> tx0_count;
+
     Tx0s(fs::path datadir)
       : datadir(datadir)
     {
@@ -45,6 +46,7 @@ public:
         auto entry = tx0_set.find(txid);
         if (entry != tx0_set.end()) {
             tx0_set[txid].push_back(denomination);
+	    tx0_count[denomination] += 1;
         } else {
             // create new entry
             tx0_set[txid] = {denomination};
@@ -94,6 +96,10 @@ public:
     int GetNumTx0s() {
         return tx0s.Size();
     }
+
+  std::map<CAmount, std::size_t> GetStats() const {
+    return tx0s.tx0_count;
+  }
 };
 
 #endif // BITCOIN_UTIL_COINJOINS_H

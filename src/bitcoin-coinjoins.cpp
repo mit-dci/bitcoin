@@ -182,7 +182,10 @@ int main(int argc, char* argv[])
 	    for (const CTransactionRef& tx : block.vtx) {
                 whirlpool_txs.Update(tx, current_block->nHeight);
             }
-	    std::cout << "cumulative # of tx0s up to height=" << block_height << " : " << whirlpool_txs.GetNumTx0s() << std::endl;
+	    std::cout << "cumulative # of tx0s up to height=" << block_height << " ntime=" << block.nTime << " : " << whirlpool_txs.GetNumTx0s() << std::endl;
+	    for (auto it : whirlpool_txs.GetStats()) {
+	      std::cout << "denom: " << it.first << " count: " << it.second << std::endl;
+	    }
 
             // look at 1 year worth of blocks after the first coinjoin block height for now
             if (block_height >= FIRST_COINJOIN_HEIGHT+52596) {
