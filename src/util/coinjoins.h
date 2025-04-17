@@ -46,10 +46,10 @@ public:
         auto entry = tx0_set.find(txid);
         if (entry != tx0_set.end()) {
             tx0_set[txid].push_back(denomination);
-	    tx0_count[denomination] += 1;
         } else {
             // create new entry
             tx0_set[txid] = {denomination};
+	    tx0_count[denomination] += 1;
         }
     }
 
